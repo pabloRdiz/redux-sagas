@@ -1,13 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./components/App";
+import reportWebVitals from "./reportWebVitals";
+import axios from "axios";
+import reducers from "./reducers";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import createSagaMidleware from "redux-saga";
+import rootSaga from "./sagas";
+import "bootstrap/dist/css/bootstrap.min.css";
+// axios.defaults.withCredentials = true;
+// axios.defaults.baseURL = "https://rem.dbwebb.se/api";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = "https://rem.dbwebb.se/api";
+
+const sagaMidleware = createSagaMidleware();
+const store = createStore(reducers, applyMiddleware(sagaMidleware));
+sagaMidleware.run(rootSaga);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>
 );
 
